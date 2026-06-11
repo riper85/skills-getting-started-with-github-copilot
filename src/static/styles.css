@@ -94,6 +94,40 @@ section h3 {
   border-radius: 999px;
   font-size: 0.9rem;
   border: 1px solid rgba(26,35,126,0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.participant-email {
+  display: inline;
+}
+
+.delete-participant {
+  background: none;
+  border: none;
+  color: #1a237e;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.delete-participant:hover {
+  background-color: rgba(26,35,126,0.15);
+  color: #c62828;
+}
+
+.delete-participant:active {
+  background-color: rgba(26,35,126,0.25);
 }
 
 .no-participants {
