@@ -78,6 +78,11 @@ section h3 {
   margin-top: 8px;
 }
 
+.participant-count {
+  margin: 8px 0 0;
+  color: #555;
+}
+
 .participants-list {
   list-style: none;
   padding: 0;
