@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+  /*
+Participant: Coseru Ionut Bogdan
+GitHub Username: riper85
+Email: bogdan.coseru@gmail.com
+*/
   const activitiesList = document.getElementById("activities-list");
   const activitySelect = document.getElementById("activity");
   const signupForm = document.getElementById("signup-form");
