@@ -15,14 +15,20 @@ document.addEventListener("DOMContentLoaded", () => {
       // Reset activity select options (keep placeholder)
       activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
 
+      const totalParticipants = Object.values(activities).reduce((sum, activity) => sum + activity.participant_count, 0);
+      const totalCapacity = Object.values(activities).reduce((sum, activity) => sum + activity.max_participants, 0);
+      const activitySummary = document.getElementById("activity-summary");
+      activitySummary.innerHTML = `<p><strong>Overall participants:</strong> ${totalParticipants} of ${totalCapacity} seats filled</p>`;
+
       // Populate activities list
       Object.entries(activities).forEach(([name, details]) => {
         const activityCard = document.createElement("div");
         activityCard.className = "activity-card";
 
-        const spotsLeft = details.max_participants - details.participants.length;
+        const spotsLeft = details.spots_left;
+        const participantCount = details.participant_count;
 
-        const participantsHtml = details.participants && details.participants.length
+        const participantsHtml = details.participants && participantCount
           ? `<ul class="participants-list">${details.participants.map(p => `<li class="participant-item"><span class="participant-email">${p}</span><button class="delete-participant" data-activity="${name}" data-email="${p}" aria-label="Remove ${p}">✕</button></li>`).join("")}</ul>`
           : `<p class="no-participants">No participants yet</p>`;
 
@@ -31,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          <p class="participant-count"><strong>Participant info:</strong> ${details.participant_info}</p>
           <div class="participants-section">
             <p><strong>Participants:</strong></p>
             ${participantsHtml}
@@ -42,9 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // Add option to select dropdown
         const option = document.createElement("option");
         option.value = name;
-        option.textContent = name;
+        option.textContent = `${name} — ${details.participant_info}`;
+        option.dataset.participantInfo = details.participant_info;
         activitySelect.appendChild(option);
       });
+
+      updateSelectedActivityInfo();
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
@@ -91,6 +101,21 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  const activitySelectInfo = document.getElementById("activity-select-info");
+
+  function updateSelectedActivityInfo() {
+    const selectedOption = activitySelect.options[activitySelect.selectedIndex];
+    if (selectedOption && selectedOption.dataset.participantInfo) {
+      activitySelectInfo.textContent = selectedOption.dataset.participantInfo;
+      activitySelectInfo.classList.remove("hidden");
+    } else {
+      activitySelectInfo.textContent = "";
+      activitySelectInfo.classList.add("hidden");
+    }
+  }
+
+  activitySelect.addEventListener("change", updateSelectedActivityInfo);
 
   // Handle participant deletion
   activitiesList.addEventListener("click", async (event) => {

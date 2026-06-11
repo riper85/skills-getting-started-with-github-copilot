@@ -83,9 +83,24 @@ def root():
     return RedirectResponse(url="/static/index.html")
 
 
+def build_activity_response(activity: dict) -> dict:
+    participant_count = len(activity["participants"])
+    max_participants = activity["max_participants"]
+
+    return {
+        "description": activity["description"],
+        "schedule": activity["schedule"],
+        "max_participants": max_participants,
+        "participants": activity["participants"],
+        "participant_count": participant_count,
+        "spots_left": max_participants - participant_count,
+        "participant_info": f"{participant_count} enrolled / {max_participants} max"
+    }
+
+
 @app.get("/activities")
 def get_activities():
-    return activities
+    return {name: build_activity_response(activity) for name, activity in activities.items()}
 
 
 @app.post("/activities/{activity_name}/signup")
@@ -104,7 +119,10 @@ def signup_for_activity(activity_name: str, email: str):
 
     # Add student
     activity["participants"].append(email)
-    return {"message": f"Signed up {email} for {activity_name}"}
+    return {
+        "message": f"Signed up {email} for {activity_name}",
+        "activity": build_activity_response(activity)
+    }
 
 
 @app.post("/activities/{activity_name}/unregister")
@@ -120,6 +138,9 @@ def unregister_from_activity(activity_name: str, email: str):
     # Remove student if they exist
     if email in activity["participants"]:
         activity["participants"].remove(email)
-        return {"message": f"Unregistered {email} from {activity_name}"}
+        return {
+            "message": f"Unregistered {email} from {activity_name}",
+            "activity": build_activity_response(activity)
+        }
     else:
         raise HTTPException(status_code=404, detail="Participant not found")
