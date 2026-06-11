@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const participantCount = details.participant_count;
 
         const participantsHtml = details.participants && participantCount
-          ? `<ul class="participants-list">${details.participants.map(p => `<li class="participant-item"><span class="participant-email">${p}</span><button class="delete-participant" data-activity="${name}" data-email="${p}" aria-label="Remove ${p}">✕</button></li>`).join("")}</ul>`
+          ? `<div class="participants-cards">${details.participants.map(p => `<div class="participant-card"><span class="participant-email">${p}</span><button class="delete-participant" data-activity="${name}" data-email="${p}" aria-label="Remove ${p}">✕</button></div>`).join("")}</div>`
           : `<p class="no-participants">No participants yet</p>`;
 
         activityCard.innerHTML = `
